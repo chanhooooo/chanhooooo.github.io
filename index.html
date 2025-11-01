@@ -566,6 +566,34 @@
 							</div>
 						</div>
 
+						<div class="resume-wrap d-flex ftco-animate">
+							<div class="icon d-flex align-items-center justify-content-center">
+								<span class="flaticon-ideas"></span>
+							</div>
+							<div class="text pl-3">
+								<span class="date">2025.10 ~ 2025.10 (1人 팀 프로젝트)</span>
+								<h2>RV32I기반 AMBA APB UART Peripheral 설계</h2>        
+								<div class="project-image my-3">
+									<img src="images/riscv_multi.PNG" alt="RISC-V 프로젝트 요약" style="width: 100%; border: 1px solid #eee;">
+								</div>
+								<li>RV32I 기반 Multi-Cylce CPU 설계</li>
+								<li>AMBA APB 버스 시스템 설계</li>
+								<li>APB 기반 FIFO UART Peripheral 설계</li>
+								<li>C Application 구현 및  시스템 검증</li>
+								<div class="tech-tags">
+									<!-- <span class="badge badge-pill badge-primary">Verilog</span>
+									<span class="badge badge-pill badge-primary">Vivado</span> -->
+									<b class="text-dark">기술 스택 : </b>SystemVerilog, Vivado, C
+								</div>
+								<div class="buttons mt-3">
+									<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#MultiCycleRiscvModal">
+									자세히보기
+									</button>
+									<a href="[프로젝트 Github 링크]" target="_blank" class="btn btn-secondary">Github</a>
+								</div>
+							</div>
+						</div>
+
 					</div>
 				</div>
 			</div>
@@ -868,7 +896,7 @@
 				</ul>
 				<hr>
 				<h4>프로젝트 상세 문서</h4>
-				<iframe src="docs/project_fpga_detail.pdf" width="100%" height="600px" style="border: none;">
+				<iframe src="docs/project_fpga_detail.pdf#toolbar=0" width="100%" height="600px" style="border: none;">
   				    <p>PDF를 표시할 수 없습니다. <a href="docs/project_fpga_detail.pdf">여기</a>를 눌러 다운로드하세요.</p>
     			</iframe>
 			</div>
@@ -928,7 +956,78 @@
 
 				<hr>
 				<h4>프로젝트 상세 문서</h4>
-				<iframe src="docs/RISCV.pdf" width="100%" height="600px" style="border: none;">
+				<iframe src="docs/RISCV.pdf#toolbar=0" width="100%" height="600px" style="border: none;">
+  				    <p>PDF를 표시할 수 없습니다. <a href="docs/RISCV.pdf">여기</a>를 눌러 다운로드하세요.</p>
+    			</iframe>
+			</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="MultiCycleRiscvModal" tabindex="-1" role="dialog" aria-labelledby="MultiCycleRiscvModal" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="MultiCycleRiscvModal">RV32I기반 AMBA APB UART Peripheral 설계</h5>        
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				
+				<h4>요약</h4>
+				<p></p>
+
+				<img src="images/APB.PNG" alt="시스템 구조" style="width:100%; max-width:600px; display:block; margin:auto; border: 1px solid #eee;">
+
+				<ul>
+					<li>APB 기반 UART_FIFO Peripheral 설계</li>
+					<li>UVM-Lite 환경을 구축하여 UART_FIFO Peripheral 검증</li>
+					<li>C Application을 설계하여 하드웨어 제어</li>
+				</ul>
+				<hr>
+
+				<h4>역할</h4>
+				<ul>
+					<li>Multi-Cylce RISC-V 설계</li>
+					<li>Peripheral의 메모리 맵, 레지스터 맵 구현</li>
+					<li>APB 인터페이스 설계</li>
+				</ul>
+				<hr>
+				
+				<h4>트러블 슈팅</h4>
+				<h5> FIFO 데이터 유실 발생 </h5>
+				<p>
+					<strong class="text-dark">문제 상황:</strong>
+				</p>
+				<ul>
+					<li>TX FIFO에서 데이터를 하나씩 전송해야 하는데 0번째 데이터를 전송하면 1번째 데이터는 유실되고 2번째 데이터가 전송되는 문제 발생</li>
+				</ul>
+				<p>
+					<strong class="text-dark">원인 분석:</strong>
+				</p>
+				<ul>
+					<li>웨이브 폼을 분석했을 때, tx의 start 신호가 2 cycle 지속되어 데이터가 하나씩 유실됨</li>
+				</ul>
+				<p>
+					<strong class="text-dark">해결 방법:</strong>
+				</p>
+				<ul>
+					<li>start 신호를 1 clock pulse로 생성</li>
+				</ul>
+
+				<h4>고찰</h4>
+				<details>
+					<summary>고찰</summary>
+					  <p>
+					    단순히 CPU 코어, 버스, 주변장치를 각각 구현해보는 경험은 이전에도 있었습니다. 하지만 본 프로젝트의 가장 큰 의의는, 이 모든 컴포넌트를 하나의 완전한 SoC로 통합하여 MCU와 같은 시스템을 완성한 것입니다. 이는 흔치 않은 경험이었습니다.
+    					특히, 하드웨어를 제어하는 C Application을 구현하면서 하드웨어와 소프트웨어의 연결고리를 명확히 이해하게 되었습니다. C 코드 한 줄이, 제가 설계한 RISC-V 코어에서 어떤 기계어로 변환되고, 이 명령이 APB 버스를 통해 어떤 신호로 전파되어 실제 하드웨어를 동작시키는지 그 전 과정을 구체적으로 추적할 수 있었습니다.
+ 					   이 과정에서 이론으로만 배웠던 개념들이 명확해졌습니다. 컴퓨터 구조 수업에서 폴링과 인터럽트 방식을 배웠을 때는 그 차이가 크게 와닿지 않았습니다. 하지만 이번에 폴링 코드를 직접 구현해보면서 인터럽트가 정말 중요하다라는 것을 깨달았습니다.
+					  </p>
+ 					  <hr>
+				</details>
+				<h4>프로젝트 상세 문서</h4>
+				<iframe src="docs/RISCV.pdf#toolbar=0" width="100%" height="600px" style="border: none;">
   				    <p>PDF를 표시할 수 없습니다. <a href="docs/RISCV.pdf">여기</a>를 눌러 다운로드하세요.</p>
     			</iframe>
 			</div>
