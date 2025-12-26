@@ -594,7 +594,36 @@
 							</div>
 						</div>
 
+
+
+						<div class="resume-wrap d-flex ftco-animate">
+							<div class="icon d-flex align-items-center justify-content-center">
+								<span class="flaticon-ideas"></span>
+							</div>
+							<div class="text pl-3">
+								<span class="date">2025.11 ~ 2025.11 (1人 개인 프로젝트)</span>
+								<h2>AXI4-Lite 기반 I2C 통신 프로토콜 설계</h2>
+								<div class="project-image my-3">
+									<img src="images/i2c_project_summary.png" alt="I2C 프로젝트 요약" style="width: 100%; border: 1px solid #eee;">
+								</div>
+								<ul>
+									<li>SystemVerilog 기반 I2C Master/Slave FSM 및 Datapath 설계</li>
+									<li>MicroBlaze 연동을 위한 AXI4-Lite Bus Interface를 활용해 I2C Master 모듈 개발 및 통합</li>
+									<li>I2C 제어 레지스터(Control Register) 설정을 위한 C 펌웨어 개발</li>
+								</ul>
+								<div class="tech-tags">
+									<b class="text-dark">기술 스택 : </b>SystemVerilog, Vivado, Vitis, C
+								</div>
+								<div class="buttons mt-3">
+									<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#AxiI2cModal">
+									자세히보기
+									</button>
+									<a href="[프로젝트 Github 링크]" target="_blank" class="btn btn-secondary">Github</a>
+								</div>
+							</div>
+						</div>
 					</div>
+
 				</div>
 			</div>
 		</div>
@@ -1027,13 +1056,91 @@
  					  <hr>
 				</details>
 				<h4>프로젝트 상세 문서</h4>
-				<iframe src="docs/RISCV.pdf#toolbar=0" width="100%" height="600px" style="border: none;">
-  				    <p>PDF를 표시할 수 없습니다. <a href="docs/RISCV.pdf">여기</a>를 눌러 다운로드하세요.</p>
+				<iframe src="docs/MULTI_CYCLE_RISCV.pdf#toolbar=0" width="100%" height="600px" style="border: none;">
+  				    <p>PDF를 표시할 수 없습니다. <a href="docs/MULTI_CYCLE_RISCV.pdf">여기</a>를 눌러 다운로드하세요.</p>
     			</iframe>
 			</div>
 			</div>
 		</div>
 	</div>
+
+	<div class="modal fade" id="AxiI2cModal" tabindex="-1" role="dialog" aria-labelledby="AxiI2cModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AxiI2cModalLabel">AXI4-Lite 기반 I2C 통신 프로토콜 설계</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                
+                <h4>요약</h4>
+                <p>SystemVerilog를 사용하여 I2C Master/Slave IP를 직접 설계하고, Xilinx MicroBlaze 프로세서와 AXI4-Lite 버스로 연결하여 FPGA 상에서 제어 가능한 I2C 통신 시스템을 구축했습니다.</p>
+
+                <img src="images/i2c_project_summary.png" alt="I2C 시스템 구조" style="width:100%; max-width:600px; display:block; margin:auto; border: 1px solid #eee;">
+                
+                <br> <ul>
+                    <li>SystemVerilog 기반 I2C Master/Slave FSM 및 Datapath 설계 </li>
+                    <li>MicroBlaze 연동을 위한 AXI4-Lite Slave Interface 구현 </li>
+                    <li>Control Register 제어를 위한 C Firmware 개발 </li>
+                </ul>
+                <hr>
+
+                <h4>주요 역할</h4>
+                <ul>
+                    <li>I2C 프로토콜 타이밍 준수를 위한 FSM 설계 및 시뮬레이션 검증 </li>
+                    <li>AXI4-Lite 버스 규격에 맞는 Register Map 설계 및 RTL 구현 </li>
+                    <li>Polling 방식의 C Application을 작성하여 FND 제어 수행 </li>
+                </ul>
+                <hr>
+                
+                <h4>트러블 슈팅</h4>
+                <h5>HW-SW 신호 동기화 </h5>
+                <p>
+                    <strong class="text-dark">문제 상황:</strong>
+                </p>
+                <ul>
+                    <li>Logic Analyzer에서는 I2C TX_DONE 신호가 정상적으로 발생했으나, MicroBlaze의 C 코드에서는 해당 신호를 감지하지 못하고 무한 대기하는 현상 발생 </li>
+                </ul>
+                <p>
+                    <strong class="text-dark">원인 분석:</strong>
+                </p>
+                <ul>
+                    <li>하드웨어에서 발생하는 done 펄스 폭이 너무 짧아, 소프트웨어의 Polling Loop가 해당 타이밍을 놓치는 문제 확인 </li>
+                </ul>
+                <p>
+                    <strong class="text-dark">해결 방법:</strong>
+                </p>
+                <ul>
+                    <li>1 클럭 펄스를 유지하는 대신, <strong>Sticky Flag 레지스터</strong>를 구현 </li>
+                    <li>하드웨어가 bit를 set(1)하면 계속 유지되고, 소프트웨어가 확인 후 직접 clear(0)하는 <strong>Write-1-to-Clear</strong> 방식 적용으로 해결</li>
+                </ul>
+
+                <hr>
+
+                <h4>고찰</h4>
+                <details>
+                    <summary style="cursor: pointer; color: #007bff; font-weight: bold;"> 자세히 보기</summary>
+                    <div class="card card-body mt-2" style="border: none; background-color: #f8f9fa;">
+                        <p>
+                            처음에는 복잡한 프로토콜을 구현하는 것이 막막했지만, 기본 동작 FSM부터 차근차근 설계하고 Waveform 디버깅을 통해 상태를 수정해 나가며 Burst 전송 같은 확장 기능까지 구현할 수 있었습니다.<br><br>
+                            특히 하드웨어의 짧은 신호를 소프트웨어가 놓치는 문제를 겪으며, HW/SW design에서 타이밍 동기화의 중요성을 깨달았습니다. 향후에는 UVM 방법론을 학습하여 더욱 체계적인 검증 환경을 구축해보고 싶습니다.
+                        </p>
+                    </div>
+                </details>
+                
+                <hr>
+                
+                <h4>프로젝트 상세 문서</h4>
+                <iframe src="docs/AXI_I2C_Project.pdf#toolbar=0" width="100%" height="600px" style="border: none;">
+                    <p>PDF를 표시할 수 없습니다. <a href="docs/AXI_I2C_Project.pdf">여기</a>를 눌러 다운로드하세요.</p>
+                </iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 
 </html>
